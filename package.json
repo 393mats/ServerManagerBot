@@ -1,0 +1,20 @@
+{
+  "name": "mc_manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^11.11.0",
+    "chokidar": "^2.1.2",
+    "discord.js": "^11.4.2",
+    "fs": "0.0.1-security",
+    "modern-rcon": "^1.0.3",
+    "srcds-rcon": "^2.2.1",
+    "typescript": "^3.3.3333"
+  }
+}

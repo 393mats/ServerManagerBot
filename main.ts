@@ -145,8 +145,6 @@ const command = (message: any, msg: string): void => {
                     channelLog = message.channel.id;
                     message.reply("Here is set as a server sync ch: " + channelLog)
                     .catch(console.error);
-                    const ch = message.client.channels.find("id", channelLog);
-                    ch.send("test");
                 // reset
                 } else if (cmd[1] === "reset" && admin) {
                     client.channels.get(channelLog).send("Hello World");
@@ -164,7 +162,7 @@ const startRcon = (message: any, msg: string, cmd: boolean): void => {
         console.log(res);
         if (cmd) {
             message.reply("RCONに接続しました")
-                        .then(() => console.log("Disconeccted Rcon"))
+                        .then(() => console.log("Coneccted Rcon"))
                         .catch(console.error);
         }
       });
@@ -177,7 +175,7 @@ const stopRcon = (message: any, msg: string, cmd: boolean): void => {
     .then(() => {
         if (cmd) {
             message.reply("RCONを切断しました。")
-                        .then(() => console.log("Connected Rcon"))
+                        .then(() => console.log("Disconnected Rcon"))
                         .catch(console.error);
         }
     });

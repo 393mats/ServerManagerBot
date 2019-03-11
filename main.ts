@@ -12,7 +12,7 @@ import Rcon = require("modern-rcon");
 import Watcher from "./watch";
 
 // Discord bot token
-const token: string = "<TOKEN>";
+const token: string = "NTUzODQ2Mzc5MTg1OTYzMDA5.D2UOUQ.H3Ehqa6K7A9WyJA0ZwBP_9_6r-g";
 
 // Rcon host
 const rconHost: string = "207.148.109.88";
@@ -186,7 +186,7 @@ const stopRcon = (message: any, msg: string, cmd: boolean): void => {
 watcher.on("log", async (data: string) => {
     // Get log from watcher
     console.log("Called", data);
-    if (channelLog) { client.channels.get(channelLog); }
+    if (channelLog !== 0) { client.channels.get(channelLog).send(data); }
 
 });
 

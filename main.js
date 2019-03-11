@@ -20,7 +20,7 @@ const Discord = require("discord.js");
 const Rcon = require("modern-rcon");
 const watch_1 = require("./watch");
 // Discord bot token
-const token = "<TOKEN>";
+const token = "NTUzODQ2Mzc5MTg1OTYzMDA5.D2UOUQ.H3Ehqa6K7A9WyJA0ZwBP_9_6r-g";
 // Rcon host
 const rconHost = "207.148.109.88";
 // Rcon host
@@ -181,8 +181,8 @@ const stopRcon = (message, msg, cmd) => {
 watcher.on("log", (data) => __awaiter(this, void 0, void 0, function* () {
     // Get log from watcher
     console.log("Called", data);
-    if (channelLog) {
-        client.channels.get(channelLog);
+    if (channelLog !== 0) {
+        client.channels.get(channelLog).send(data);
     }
 }));
 client.login(token)

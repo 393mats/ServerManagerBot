@@ -19,7 +19,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const Dotenv = require("dotenv");
 const Rcon = require("modern-rcon");
-const watch_1 = require("./watch");
+const watch_js_1 = require("./watch.js");
 Dotenv.config();
 // Discord bot token
 const token = process.env.TOKEN;
@@ -57,7 +57,7 @@ const rcon = new Rcon(rconHost, rconPassword);
 const client = new discord_js_1.Client();
 const embed = new discord_js_1.RichEmbed();
 // LogWatcher
-const watcher = new watch_1.default(logfileName);
+const watcher = new watch_js_1.default(logfileName);
 // Ready
 client.on("ready", () => {
     console.log("Bot is ready");
@@ -188,13 +188,13 @@ const command = (message, msg) => {
                 break;
             }
             if (cmd[1] === "connect") {
-                channelLog = message.channel.id;
                 if (channelLog) {
                     message.reply("既に同期済みです。")
                         .then(() => console.log(`Already Connected`))
                         .catch(console.error);
                     break;
                 }
+                channelLog = message.channel.id;
                 startRcon(message, msg);
                 // reset
             }

@@ -10,7 +10,7 @@ by Tetsuya (Tex.my)
 import {Client, RichEmbed} from "discord.js";
 import Dotenv = require("dotenv");
 import Rcon = require("modern-rcon");
-import Watcher from "./watch";
+import Watcher from "./watch.js";
 Dotenv.config();
 
 // Discord bot token
@@ -196,13 +196,13 @@ const command = (message: any, msg: string): void => {
                 if (!admin) { break; }
 
                 if (cmd[1] === "connect") {
-                    channelLog = message.channel.id;
                     if (channelLog) {
                         message.reply("既に同期済みです。")
                         .then(() => console.log(`Already Connected`))
                         .catch(console.error);
                         break;
                     }
+                    channelLog = message.channel.id;
                     startRcon(message, msg);
                 // reset
                 } else if (cmd[1] === "disconnect" && channelLog) {

@@ -1,3 +1,4 @@
+// Watcher for Server Manager by Tetsuya Matsuda
 // Watcher for getting Minecraft log
 // tslint:disable:no-console
 // Import

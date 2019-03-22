@@ -12,6 +12,7 @@
     "@types/node": "^11.11.0",
     "chokidar": "^2.1.2",
     "discord.js": "^11.4.2",
+    "dotenv": "^6.2.0",
     "fs": "0.0.1-security",
     "modern-rcon": "^1.0.3",
     "srcds-rcon": "^2.2.1",

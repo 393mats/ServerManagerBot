@@ -16,38 +16,46 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // tslint:disable:no-console
-const Discord = require("discord.js");
+const discord_js_1 = require("discord.js");
+const Dotenv = require("dotenv");
 const Rcon = require("modern-rcon");
 const watch_1 = require("./watch");
+Dotenv.config();
 // Discord bot token
-const token = "NTUzODQ2Mzc5MTg1OTYzMDA5.D2UOUQ.H3Ehqa6K7A9WyJA0ZwBP_9_6r-g";
+const token = process.env.TOKEN;
 // Rcon host
-const rconHost = "207.148.109.88";
-// Rcon host
-const rconPassword = "12345";
+const rconHost = process.env.HOST;
+// Rcon Password
+const rconPassword = process.env.PW;
 // Logfile
-const logfileName = "./test.log";
+const logfileName = process.env.LOG;
 // Admin role
-const adminRole = "Manager";
-// Admin command lists
-const helpCommand = `
+const adminRole = process.env.ADMIN;
+const adminRole2 = process.env.ADMIN2;
+// ssh
+const sshPass1 = process.env.SSHPASS1;
+const sshPass2 = process.env.SSHPASS2;
+const sshIP1 = process.env.SSHIP1;
+const sshIP2 = process.env.SSHIP2;
+const serverInfo = `\`
+-BE SERVER-
+${sshIP1} / ${sshPass1}
+User: mcbe
+screen < server / ndsv
 
-\`\`\`
-!join <servername>  -- サーバーへの参加申請を送る
-!admin              -- 管理者権限の確認
-!admin member       -- 参加メンバーの一覧
-!rcon <option>      -- RCON start/stop
-!channel <option>   -- チャンネル設定
-                    -- server / reset
-\`\`\`
-
+-JE SERVER-
+${sshIP2} / ${sshPass2}
+User: mcje
+screen < server / ndsv
+\`
 `;
 // Server Channel for Discord
 let channelLog = 0;
 // Rcon
 const rcon = new Rcon(rconHost, rconPassword);
 // Discord client
-const client = new Discord.Client();
+const client = new discord_js_1.Client();
+const embed = new discord_js_1.RichEmbed();
 // LogWatcher
 const watcher = new watch_1.default(logfileName);
 // Ready
@@ -79,14 +87,39 @@ const command = (message, msg) => {
     // Admin
     let admin = false;
     // tslint:disable-next-line:no-shadowed-variable
-    const role = message.member.roles.find((role) => role.name === adminRole);
-    if (role) {
+    const role1 = message.member.roles.find((role) => role.name === adminRole);
+    const role2 = message.member.roles.find((role) => role.name === adminRole2);
+    if (role1 || role2) {
         admin = true;
     }
     switch (cmd[0]) {
         // help command
         case "!help":
-            message.reply(helpCommand)
+            message.channel.send({
+                embed: {
+                    author: {
+                        icon_url: client.user.avatarURL,
+                        name: client.user.username,
+                    },
+                    color: 0x00FF00,
+                    description: "Server Manager for Minecraft",
+                    fields: [{
+                            name: "**!help**",
+                            value: "ヘルプ",
+                        },
+                        {
+                            name: "**!join < mcbe | mcje >**",
+                            value: "サーバーへの参加申請を送る",
+                        },
+                        {
+                            name: "**!server < connect | disconnect | admin >**",
+                            value: "チャンネル設定",
+                        },
+                    ],
+                    timestamp: new Date(),
+                    title: "HELP",
+                },
+            })
                 .then(() => console.log(`help`))
                 .catch(console.error);
             break;
@@ -94,97 +127,131 @@ const command = (message, msg) => {
         case "!join":
             // Minecraft BE
             if (cmd[1] === "mcbe") {
-                message.author.send("ここに支払い方法の説明とリンクを書く")
+                const info = `Minecraft BEサーバーへの参加ありがとうございます。
+参加にあたって下記の約束事をお守りください。
+１：Minecraftサーバー内を含め、他人を傷つける発言（誹謗中傷）をしない
+２：荒らし行為・故意な破壊行為・迷惑な行為をしない
+３：サーバーの接続用アドレスを外部に公開しない。
+４：ゲーム内ログイン情報、チャット等のログが記録されます。運営目的以外での使用は致しませんのでご了承ください。
+
+また、参加者にはサーバーの運営費として３ヶ月or半年に一度、一人当たり３００円〜６００円の支援を募らせて頂きます。
+運営費がないと続けられないので、ご協力をお願いします。退会の際は運営メンバーまでご連絡ください。
+
+接続用アドレス：${sshIP1}
+
+それでは、楽しいMinecraftライフを！`;
+                message.author.send(info)
                     .then(() => console.log(`Sent direct message: ${msg}`))
                     .catch(console.error);
-                message.reply("「マインクラフトBEサーバー」への参加申請ありがとうございます。\n DMを送信致しましたのでご確認ください。")
+                message.reply("「マインクラフトBEサーバー」への参加ありがとうございます。\n DMを送信致しましたのでご確認ください。")
                     .then(() => console.log(`Complete: ${msg}`))
+                    .catch(console.error);
+                const addrole = message.guild.roles.find((role) => role.name === "Minecraft-BE");
+                message.member.addRole(addrole)
+                    .then(() => console.log("Added role"))
+                    .catch(console.error);
+            }
+            else if (cmd[1] === "mcje") {
+                const info = `Minecraft JEサーバーへの参加申請ありがとうございます。
+参加にあたって下記の約束事をお守りください。
+１：Minecraftサーバー内を含め、他人を傷つける発言（誹謗中傷）をしない
+２：荒らし行為・故意な破壊行為・迷惑な行為をしない
+３：サーバーの接続用アドレスを外部に公開しない。
+４：ゲーム内ログイン情報、チャット等のログが記録されます。運営目的以外での使用は致しませんのでご了承ください。
+
+また、参加者にはサーバーの運営費として３ヶ月or半年に一度、一人当たり３００円〜６００円の支援を募らせて頂きます。
+運営費がないと続けられないので、ご協力をお願いします。退会の際は運営メンバーまでご連絡ください。
+
+接続用アドレス：${sshIP2}
+
+それでは、楽しいMinecraftライフを！`;
+                message.author.send(info)
+                    .then(() => console.log(`Sent direct message: ${msg}`))
+                    .catch(console.error);
+                message.reply("「マインクラフトJEサーバー」への参加申請ありがとうございます。\n DMを送信致しましたのでご確認ください。")
+                    .then(() => console.log(`Complete: ${msg}`))
+                    .catch(console.error);
+                const addrole = message.guild.roles.find((role) => role.name === "Minecraft-JE");
+                message.member.addRole(addrole)
+                    .then(() => console.log("Added role"))
                     .catch(console.error);
             }
             else {
-                message.reply(cmd[1] + "は存在しません。")
+                message.reply(cmd[1] + "サーバーが存在しません。")
                     .then(() => console.log(`Sent text message: ${msg}`))
                     .catch(console.error);
             }
             break;
-        // Admin command
-        case "!admin":
-            // Top
-            if (!admin) {
-                message.reply("エラー：管理者権限がありません。")
-                    .then(() => console.log(`Complete: ${msg}`))
-                    .catch(console.error);
-            }
-            else if (!cmd[1] && admin) {
-                message.reply("あなたは管理者です。")
-                    .then(() => console.log(`Complete: ${msg}`))
-                    .catch(console.error);
-                // admin member command
-            }
-            else if (cmd[1] === "member" && admin) {
-                message.reply("メンバーリストを表示します。")
-                    .then(() => console.log(`Complete: ${msg}`))
-                    .catch(console.error);
-            }
-            break;
-        case "!rcon":
-            // admin stop-rcon command
-            if (cmd[1] === "stop" && admin) {
-                stopRcon(message, msg, true);
-                // admin start-rcon command
-            }
-            else if (cmd[1] === "start" && admin) {
-                startRcon(message, msg, true);
-            }
-            break;
-        case "!channel":
+        case "!server":
             // server channel
-            if (cmd[1] === "server" && admin) {
+            if (!admin) {
+                break;
+            }
+            if (cmd[1] === "connect") {
                 channelLog = message.channel.id;
-                message.reply("Here is set as a server sync ch: " + channelLog)
-                    .catch(console.error);
+                if (channelLog) {
+                    message.reply("既に同期済みです。")
+                        .then(() => console.log(`Already Connected`))
+                        .catch(console.error);
+                    break;
+                }
+                startRcon(message, msg);
                 // reset
             }
-            else if (cmd[1] === "reset" && admin) {
-                client.channels.get(channelLog).send("Hello World");
+            else if (cmd[1] === "disconnect" && channelLog) {
+                if (!channelLog) {
+                    client.channels.get(channelLog).send("同期されていません");
+                    break;
+                }
+                client.channels.get(channelLog).send("同期を解除しました。");
                 channelLog = 0;
+                rcon.disconnect();
+            }
+            else if (cmd[1] === "admin") {
+                message.author.send(serverInfo)
+                    .then(() => console.log(`Sent direct message: ${msg}`))
+                    .catch(console.error);
+            }
+            break;
+        default:
+            // rcon
+            if (message.channel.id === channelLog && admin) {
+                if (cmd[0] !== "//") {
+                    sendToMinecraft(message, msg);
+                }
             }
             break;
     }
 };
 // tslint:disable-next-line:no-empty
-const startRcon = (message, msg, cmd) => {
-    rcon.connect().then(() => {
-        return rcon.send("help"); // That's a command for Minecraft
-    }).then((res) => {
-        console.log(res);
-        if (cmd) {
-            message.reply("RCONに接続しました")
-                .then(() => console.log("Coneccted Rcon"))
-                .catch(console.error);
-        }
+const startRcon = (message, msg) => {
+    rcon.connect()
+        .then(() => {
+        client.channels.get(channelLog).send("このチャンネルをサーバーと同期します。ID: " + channelLog);
+    })
+        .catch((e) => {
+        client.channels.get(channelLog).send("エラーが発生したため、同期できませんでした。" + channelLog);
+        console.log(e);
+        channelLog = 0;
     });
 };
 // tslint:disable-next-line:no-empty
-const stopRcon = (message, msg, cmd) => {
-    rcon.disconnect()
-        .then(() => {
-        if (cmd) {
-            message.reply("RCONを切断しました。")
-                .then(() => console.log("Disconnected Rcon"))
-                .catch(console.error);
-        }
+const sendToMinecraft = (message, msg) => {
+    rcon.send(msg)
+        .then((res) => {
+        console.log("Sent command: " + msg);
+        client.channels.get(channelLog).send(res);
+    })
+        .catch(() => {
+        client.channels.get(channelLog).send("エラーが発生したため、送信できませんでした。msg: " + msg);
     });
 };
 watcher.on("log", (data) => __awaiter(this, void 0, void 0, function* () {
     // Get log from watcher
-    console.log("Called", data);
     if (channelLog !== 0) {
+        console.log("Called", data);
         client.channels.get(channelLog).send(data);
     }
 }));
-client.login(token)
-    .then(() => {
-    // g
-});
+client.login(token);
 //# sourceMappingURL=main.js.map

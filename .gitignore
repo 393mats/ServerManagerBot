@@ -1,6 +1,6 @@
 *.env
 *.zip
 *.log
-svmPlugin/
-node_modules/
-types/
+/svmPlugin
+/node_modules
+/types

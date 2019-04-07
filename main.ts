@@ -64,6 +64,10 @@ client.on("ready", () => {
     console.log("Bot is ready");
 });
 
+client.on("uncaughtException", (err) => {
+    return;
+});
+
 // Get message from Discord
 client.on("message", (message: any) => {
     // Ignore me
